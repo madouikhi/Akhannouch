@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark light" />
+    <title>Countdown to PM’s return</title>
+    <style>
+      :root {
+        --bg: #0f1221;
+        --bg-accent: #171a2c;
+        --card: #12162a;
+        --text: #e9ecf1;
+        --muted: #9aa3b2;
+        --primary: #6ee7f0;
+        --accent: #ff7ab6;
+        --shadow: 0 10px 30px rgba(0,0,0,.35);
+        --radius: 16px;
+      }
+
+      * { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: radial-gradient(1200px 600px at 20% 10%, #1a1f3a 0%, transparent 60%),
+                    radial-gradient(1000px 800px at 90% 10%, #2a133a 0%, transparent 55%),
+                    linear-gradient(180deg, var(--bg) 0%, #0b0d1a 100%);
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .page {
+        width: 100%;
+        max-width: 940px;
+      }
+
+      .card {
+        background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0)) padding-box,
+                    linear-gradient(120deg, rgba(110,231,240,.6), rgba(255,122,182,.6)) border-box;
+        border: 1px solid transparent;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        overflow: clip;
+      }
+
+      .hero-img {
+        width: 100%;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        display: block;
+        filter: saturate(1.05) contrast(1.02);
+        transform: scale(1.002);
+      }
+
+      .content {
+        padding: 28px 22px 22px;
+      }
+
+      .title {
+        text-align: center;
+        line-height: 1.25;
+        margin: 0 0 10px 0;
+        font-weight: 800;
+        letter-spacing: 0.2px;
+        font-size: clamp(20px, 3.2vw, 32px);
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      .subtitle {
+        text-align: center;
+        margin: 0 0 18px 0;
+        color: var(--muted);
+        font-weight: 600;
+        font-size: clamp(13px, 1.8vw, 16px);
+      }
+
+      .timer {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 14px;
+        align-items: stretch;
+        margin: 8px auto 18px;
+        max-width: 840px;
+      }
+
+      .tile {
+        position: relative;
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.015));
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 14px;
+        padding: 16px 10px 14px;
+        text-align: center;
+        overflow: hidden;
+      }
+
+      .value {
+        display: block;
+        font-weight: 800;
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 1px;
+        font-size: clamp(28px, 7vw, 56px);
+        line-height: 1.05;
+        background: linear-gradient(180deg, #fff, #c9d6ff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow: 0 6px 18px rgba(110,231,240,0.08);
+        will-change: transform;
+        transform: translateZ(0);
+      }
+
+      .label {
+        display: block;
+        margin-top: 6px;
+        color: var(--muted);
+        font-weight: 700;
+        letter-spacing: 0.6px;
+        font-size: clamp(11px, 1.5vw, 13px);
+        text-transform: uppercase;
+      }
+
+      .caption {
+        text-align: center;
+        margin: 6px 6px 4px;
+        color: #c8d1de;
+        font-size: clamp(14px, 2vw, 18px);
+        font-weight: 600;
+      }
+
+      .note {
+        text-align: center;
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 16px;
+      }
+
+      .controls {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 10px;
+        align-items: center;
+        margin: 18px auto 4px;
+        max-width: 560px;
+      }
+
+      .input {
+        appearance: none;
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid rgba(255,255,255,0.12);
+        background: rgba(255,255,255,0.06);
+        color: var(--text);
+        padding: 12px 14px;
+        font-size: 14px;
+        outline: none;
+      }
+      .input:focus {
+        border-color: rgba(110,231,240,.6);
+        box-shadow: 0 0 0 3px rgba(110,231,240,.15);
+      }
+
+      .btn {
+        user-select: none;
+        appearance: none;
+        border: none;
+        cursor: pointer;
+        border-radius: 12px;
+        padding: 12px 16px;
+        font-weight: 800;
+        letter-spacing: .4px;
+        color: #0a0c18;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        box-shadow: 0 6px 16px rgba(110,231,240,.18), 0 2px 8px rgba(255,122,182,.18);
+      }
+      .btn:active { transform: translateY(1px); }
+
+      footer { margin-top: 22px; text-align: center; color: var(--muted); font-size: 12px; }
+
+      /* Floating social link */
+      .social {
+        position: fixed;
+        right: 18px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--accent), var(--primary));
+        box-shadow: 0 10px 24px rgba(0,0,0,.35);
+        color: #0a0c18;
+        text-decoration: none;
+        z-index: 50;
+        transition: transform .2s ease, box-shadow .2s ease, filter .2s ease;
+      }
+      .social:hover { transform: translateY(-50%) scale(1.05); filter: saturate(1.1); box-shadow: 0 12px 28px rgba(0,0,0,.4); }
+      .social:active { transform: translateY(-50%) scale(0.98); }
+
+      @media (max-width: 640px) {
+        .content { padding: 22px 16px 16px; }
+        .timer { gap: 10px; }
+        .tile { padding: 14px 8px 12px; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <section class="card" id="app">
+        <img
+          class="hero-img"
+          alt="PM humorous banner"
+          src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgQRx5-zlMSAKR5HM8XCuJGmGMSrWPlLS9hrBkrYXuNh7Kh3Ejn7dcYj_wVEujr88W_vGNaBSrCCMJOF1oxbhylShh4DYoLmG2Yzdu-vE8nSk5HwRBAVWtTrLdXVhOtbtctxWYNGZrB5oEXAZYuPChQQkaKXG9OUrTWRKPFTvRgB8_hMmD3uFhT-yQeusQ/s715/images.webp"
+          referrerpolicy="no-referrer"
+        />
+
+        <div class="content">
+          <h1 class="title">Countdown to PM’s return</h1>
+
+          <div class="timer" role="timer" aria-live="polite">
+            <div class="tile">
+              <span class="value" id="days">00</span>
+              <span class="label">Days</span>
+            </div>
+            <div class="tile">
+              <span class="value" id="hours">00</span>
+              <span class="label">Hours</span>
+            </div>
+            <div class="tile">
+              <span class="value" id="minutes">00</span>
+              <span class="label">Minutes</span>
+            </div>
+            <div class="tile">
+              <span class="value" id="seconds">00</span>
+              <span class="label">Seconds</span>
+            </div>
+          </div>
+
+          <p class="caption">Still missing… or just avoiding protests?</p>
+
+          <footer>Created for fun and satire.</footer>
+
+          
+
+          
+        </div>
+      </section>
+    </main>
+
+    <!-- Instagram floating link -->
+    <a class="social" href="https://www.instagram.com/kawab.is/" target="_blank" rel="noopener" aria-label="Instagram: kawab.is">
+      <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" fill="none">
+        <defs>
+          <linearGradient id="igGrad" x1="0" y1="0" x2="24" y2="24" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#e6faff" stop-opacity="0.95"/>
+          </linearGradient>
+        </defs>
+        <path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5z" stroke="url(#igGrad)" stroke-width="2"/>
+        <circle cx="12" cy="12" r="3.5" stroke="url(#igGrad)" stroke-width="2"/>
+        <circle cx="17.5" cy="6.5" r="1.2" fill="url(#igGrad)"/>
+      </svg>
+    </a>
+
+    <script>
+      (function () {
+        "use strict";
+
+        /**
+         * Utilities
+         */
+        function clamp(value, min, max) {
+          if (value < min) return min;
+          if (value > max) return max;
+          return value;
+        }
+
+        function pad2(num) {
+          return String(Math.floor(Math.abs(num))).padStart(2, "0");
+        }
+
+        function parseQueryStart() {
+          try {
+            const params = new URLSearchParams(location.search);
+            const raw = params.get("start");
+            if (!raw) return null;
+            const parsed = new Date(raw);
+            return isNaN(parsed.getTime()) ? null : parsed;
+          } catch {
+            return null;
+          }
+        }
+
+        function defaultStartDate() {
+          // Start as if it began 8 days ago from now
+          const eightDaysMs = 8 * 24 * 60 * 60 * 1000;
+          return new Date(Date.now() - eightDaysMs);
+        }
+
+        /**
+         * Animated number transition using transforms for subtle motion
+         */
+        function animateSwap(element, nextText) {
+          if (!element || element.textContent === nextText) return;
+          const oldText = element.textContent;
+          const outSpan = document.createElement("span");
+          const inSpan = document.createElement("span");
+          outSpan.textContent = oldText;
+          inSpan.textContent = nextText;
+
+          const wrapper = document.createElement("span");
+          wrapper.style.display = "inline-block";
+          wrapper.style.position = "relative";
+          wrapper.style.height = "1em";
+          wrapper.style.overflow = "hidden";
+
+          outSpan.style.position = inSpan.style.position = "absolute";
+          outSpan.style.left = inSpan.style.left = "50%";
+          outSpan.style.transform = inSpan.style.transform = "translateX(-50%)";
+          outSpan.style.top = "0";
+          inSpan.style.top = "100%";
+          outSpan.style.willChange = inSpan.style.willChange = "transform, opacity";
+
+          element.textContent = "";
+          wrapper.appendChild(outSpan);
+          wrapper.appendChild(inSpan);
+          element.appendChild(wrapper);
+
+          const duration = 280;
+          const start = performance.now();
+          function frame(t) {
+            const elapsed = t - start;
+            const p = clamp(elapsed / duration, 0, 1);
+            const ease = 1 - Math.pow(1 - p, 3);
+            outSpan.style.transform = `translate(-50%, ${-ease * 100}%)`;
+            inSpan.style.transform = `translate(-50%, ${100 - ease * 100}%)`;
+            outSpan.style.opacity = String(1 - p);
+            inSpan.style.opacity = String(p);
+            if (p < 1) {
+              requestAnimationFrame(frame);
+            } else {
+              element.textContent = nextText;
+            }
+          }
+          requestAnimationFrame(frame);
+        }
+
+        /**
+         * Countdown logic
+         */
+        const daysEl = document.getElementById("days");
+        const hoursEl = document.getElementById("hours");
+        const minutesEl = document.getElementById("minutes");
+        const secondsEl = document.getElementById("seconds");
+
+        const dateInput = document.getElementById("dateInput");
+        const applyBtn = document.getElementById("applyBtn");
+
+        let startTime = parseQueryStart() || defaultStartDate();
+
+        function toLocalDatetimeValue(date) {
+          const tzOffsetMs = date.getTimezoneOffset() * 60000;
+          const local = new Date(date.getTime() - tzOffsetMs);
+          return local.toISOString().slice(0, 16);
+        }
+
+        function updateTimer() {
+          const now = new Date();
+          let delta = Math.max(0, now.getTime() - startTime.getTime());
+
+          const days = Math.floor(delta / (24 * 60 * 60 * 1000));
+          delta -= days * 24 * 60 * 60 * 1000;
+          const hours = Math.floor(delta / (60 * 60 * 1000));
+          delta -= hours * 60 * 60 * 1000;
+          const minutes = Math.floor(delta / (60 * 1000));
+          delta -= minutes * 60 * 1000;
+          const seconds = Math.floor(delta / 1000);
+
+          animateSwap(daysEl, String(days).padStart(2, "0"));
+          animateSwap(hoursEl, pad2(hours));
+          animateSwap(minutesEl, pad2(minutes));
+          animateSwap(secondsEl, pad2(seconds));
+        }
+
+        function tick() {
+          updateTimer();
+          setTimeout(tick, 250);
+        }
+
+        function setStartFromInput() {
+          if (!dateInput) return;
+          const value = dateInput.value;
+          if (!value) return;
+          const picked = new Date(value);
+          if (!isNaN(picked.getTime())) {
+            startTime = picked;
+            updateTimer();
+          }
+        }
+
+        // Initialize (only if controls exist)
+        if (dateInput) {
+          dateInput.value = toLocalDatetimeValue(startTime);
+          dateInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter") setStartFromInput();
+          });
+        }
+        if (applyBtn) {
+          applyBtn.addEventListener("click", setStartFromInput);
+        }
+
+        // Start ticking
+        tick();
+      })();
+    </script>
+  </body>
+  </html>
+
+
